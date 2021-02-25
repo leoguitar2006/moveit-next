@@ -31,13 +31,6 @@
     }
 }
 
-/* Add para se ajustar ao meu monitor....*/
-@media(max-height: 650px) {
-    html {
-      font-size: 89.25%;
-    }
-  }
-  
 
 body {
     background-color:var(--background);
