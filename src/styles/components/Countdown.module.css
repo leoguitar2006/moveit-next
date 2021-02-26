@@ -57,6 +57,9 @@
 
     transition: background-color 0.2;
 
+    outline: none;
+    
+
 }
 
 .countdownButton:not(:disabled):hover {
@@ -65,7 +68,7 @@
 
 .countdownButtonActive {
     background: var(--white);
-    color: var(--title);
+    color: var(--title);    
 }
 
 .countdownButtonActive:not(:disabled):hover {
@@ -78,4 +81,8 @@
     cursor: not-allowed;
     color: var(--text);
     border-bottom: 4px solid var(--green);
+}
+
+.countdownButton:disabled img {
+    margin-left: 1rem;
 }

@@ -1,46 +1,18 @@
-import { count } from "console";
-import { useState, useEffect, useContext } from "react";
-import { ChallengesContext } from "../contexts/ChallengesContext";
+import { useContext } from "react";
+import { CountdownContex } from "../contexts/CountdownContex";
 import styles from "../styles/components/Countdown.module.css"
 
-let countdownTimeout: NodeJS.Timeout; //Tipagem forte devido ao Typescript
-
 export function Countdown() {
-    const { startNewChallenge } = useContext(ChallengesContext);
-
-    const initialTime = 0.1 * 60;
-    const [time, setTime] = useState(initialTime);
-    const [isActive, setIsActive] = useState(false);
-    const [hasFinished, setHasFinished] = useState(false);
-
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60; //Resto da Divisão
+    const { minutes, 
+            seconds, 
+            hasFinished, 
+            isActive, 
+            startCountdown, 
+            resetCountdown } = useContext(CountdownContex);
 
     const [minuteLeft, minuteRight] = String(minutes).padStart(2, '0').split('');
     const [secondLeft, secondRight] = String(seconds).padStart(2, '0').split('');
-
-    function startCountdown() {
-        setIsActive(true);
-    };
-
-    function resetCountdown() {
-        clearTimeout(countdownTimeout);
-        setIsActive(false);  
-        setTime(initialTime);
-    }
-
-    useEffect(() => {
-        if (isActive && time > 0) {
-            countdownTimeout = setTimeout(() => {            
-                                    setTime(time - 1);            
-                                }, 1000);
-        } else if (isActive && time === 0) {
-            setHasFinished(true);
-            setIsActive(false);
-            startNewChallenge();
-        }
-    }, [isActive, time])
-
+  
     return (
         <div>
             <div className={styles.countdownContainer}>
@@ -61,6 +33,7 @@ export function Countdown() {
                 className={styles.countdownButton}
                 >
                     Ciclo encerrado
+                    <img src="icons/check_circle.svg" alt=""/>
                 </button>    
             ) : (
                 <>
