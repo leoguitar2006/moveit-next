@@ -1,7 +1,11 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { LevelUpModal } from "../components/LevelUpModal";
+
+
+import axios from 'axios';
 import Cookies from "js-cookie";
 import challenges from "../../challenges.json";
-import { LevelUpModal } from "../components/LevelUpModal";
+import { LoginOverlay } from "../components/LoginOverlay";
 
 interface Challenge {
     type: "body" | "eye",  //Como se fosse um enum
@@ -19,7 +23,9 @@ interface ChallengesContextData {
     resetChallenge: () => void,
     experienceToNextLevel: number,
     completeChallenge: () => void,
-    closeModal: () => void
+    closeModal: () => void,
+    closeLogin: () => void,
+    saveLoginUser: (user: string) => void
 };
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
@@ -28,7 +34,9 @@ interface ChallengesProviderProps {
     children: ReactNode
     level: number,
     currentExperience: number,
-    challengesCompleted: number  
+    challengesCompleted: number,
+    user: string
+    userName: string 
 };
 
 export function ChallengesProvider({children, ...rest}: ChallengesProviderProps) {
@@ -38,6 +46,11 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
 
     const [activeChallenge, setActiveChallenge] = useState(null);
     const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
+
+    const [user, setUser] = useState(rest.user ?? '')
+    const [userName, setUserName] = useState(rest.userName ?? '')
+
+    const [isLoginOpen, setIsLoginOpen] = useState(!!!rest.userName);
 
     const experienceToNextLevel = Math.pow((level + 1) * 4, 2);
 
@@ -52,6 +65,11 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
 
     },[ level, currentExperience, challengesCompleted ]);
 
+    useEffect(() => {
+        user && Cookies.set('user', user)
+        userName && Cookies.set('userName', userName)
+      }, [user, userName])
+
     function levelUp() {
         setLevel(level + 1);
         setIsLevelModalOpen(true);
@@ -60,6 +78,21 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
     function closeModal() {
         setIsLevelModalOpen(false);
     };
+
+    function closeLogin() {
+        setIsLoginOpen(false);
+    }
+
+    function saveLoginUser(user: string) {
+        if (user === null || user === "") {
+            user = "Usuário sem Github"
+        } else {
+            axios.get(`https://api.github.com/users/${user}`).then((response) => {
+                setUserName(response.data.name)
+            })
+        }
+        setUser(user);
+    }
 
     function startNewChallenge() {
         const randomChallengeIndex = Math.floor(Math.random() * challenges.length);
@@ -110,10 +143,13 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
         resetChallenge,
         experienceToNextLevel,
         completeChallenge,
-        closeModal}}>
+        closeModal,
+        closeLogin,
+        saveLoginUser}}>
 
         {children};
         {isLevelModalOpen && <LevelUpModal />}
+        {isLoginOpen && <LoginOverlay /> }
     </ChallengesContext.Provider>
     );
 }
