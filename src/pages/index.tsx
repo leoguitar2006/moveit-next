@@ -6,11 +6,12 @@ import { Countdown } from "../components/Countdown";
 import { ExperienceBar } from "../components/ExperienceBar";
 import { Profile } from "../components/Profile";
 import { ChallengeBox } from "../components/ChallengeBox";
-import { LoginOverlay } from "../components/LoginOverlay";
 
-import styles from "../styles/pages/Home.module.css";
+
 import { CountdownProvider } from "../contexts/CountdownContex";
 import { ChallengesProvider } from "../contexts/ChallengesContext";
+
+import styles from "../styles/pages/Home.module.css";
 
 interface HomeProps {
   level: number,
@@ -34,7 +35,7 @@ export default function Home(props: HomeProps) {
         <Head>
           <title>Início | move.it</title>
         </Head>
-
+       
         <ExperienceBar/>
 
         <CountdownProvider>
@@ -53,7 +54,7 @@ export default function Home(props: HomeProps) {
 
     </ChallengesProvider>
     
-  )
+  );
 }
 
 //Isso roda no servidor Node.js e não no navegador

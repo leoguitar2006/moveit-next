@@ -1,8 +1,12 @@
+import { SideBar } from "../components/SideBar";
 import "../styles/global.css";
 
 function MyApp({ Component, pageProps }) {
-  return (            
-        <Component {...pageProps} />
+  return (
+        <div>
+          <SideBar />
+          <Component {...pageProps} />
+        </div>
     );
 }
 

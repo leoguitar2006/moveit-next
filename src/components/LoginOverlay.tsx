@@ -8,8 +8,8 @@ export function LoginOverlay() {
     const [user, setUser] = useState('');
 
     function handleLoginButton() {
-        closeLogin()
-        saveLoginUser(user)
+        closeLogin();
+        saveLoginUser(user);
       }
     
       function setLogin(user: string) {

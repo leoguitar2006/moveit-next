@@ -25,7 +25,9 @@ interface ChallengesContextData {
     completeChallenge: () => void,
     closeModal: () => void,
     closeLogin: () => void,
-    saveLoginUser: (user: string) => void
+    saveLoginUser: (user: string) => void,
+    user: string,
+    userName: string
 };
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
@@ -85,7 +87,7 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
 
     function saveLoginUser(user: string) {
         if (user === null || user === "") {
-            user = "Usuário sem Github"
+            user = ""
         } else {
             axios.get(`https://api.github.com/users/${user}`).then((response) => {
                 setUserName(response.data.name)
@@ -145,9 +147,11 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
         completeChallenge,
         closeModal,
         closeLogin,
-        saveLoginUser}}>
+        saveLoginUser, 
+        user, 
+        userName}}>
 
-        {children};
+        {children}
         {isLevelModalOpen && <LevelUpModal />}
         {isLoginOpen && <LoginOverlay /> }
     </ChallengesContext.Provider>
