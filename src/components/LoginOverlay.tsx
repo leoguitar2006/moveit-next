@@ -1,4 +1,6 @@
 import { useContext, useState } from "react";
+import Router from "next/router";
+
 import { ChallengesContext } from "../contexts/ChallengesContext";
 import styles from "../styles/components/LoginOverlay.module.css";
 
@@ -7,9 +9,10 @@ export function LoginOverlay() {
     const { closeLogin, saveLoginUser } = useContext(ChallengesContext);
     const [user, setUser] = useState('');
 
-    function handleLoginButton() {
+    function handleLoginButton() {        
         closeLogin();
-        saveLoginUser(user);
+        saveLoginUser(user);        
+        Router.push("/");
       }
     
       function setLogin(user: string) {

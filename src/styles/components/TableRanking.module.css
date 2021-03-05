@@ -1,0 +1,41 @@
+#dataTable {
+    width: 100%;
+    border-spacing: 0 0.5rem;
+    font-size: 1rem; 
+}
+
+#dataTable thead tr {
+    height: 60px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+
+#dataTable thead tr td span{
+    margin-left: 10px;
+}
+
+#dataTable tbody {
+    background-color: #FFF;  
+}
+
+#dataTable tbody tr td {
+    padding: 0.5rem;
+}
+
+#dataTable tbody tr td:first-child {
+    width: 6rem;
+    font-size: 3rem;
+    text-align: center;
+    border :none;
+    border-right: 0.5rem solid var(--background);
+}
+
+#dataTable tbody tr td span {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+

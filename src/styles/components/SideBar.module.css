@@ -11,7 +11,7 @@
     position: absolute;
     top:  0;
     left: 0;
-    z-index: 1;
+    z-index: 999;
 
     background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
     filter: drop-shadow(0px 0px 60px rgba(0, 0, 0, 0.05));
@@ -21,7 +21,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 
     width: 100%;
     height: 150px;
@@ -44,4 +44,26 @@
 
 .sideBarContainer button:hover {
     background-color: white;
+}
+
+.sideBarContainer div:last-child button {
+    width: 100%;
+    height: 70px;
+    border: none;
+
+    background-color:transparent;
+
+    border-radius: 5px 0 0 5px;
+   
+    outline: none;
+
+}
+
+.sideBarContainer div:last-child button:hover {
+    background-color: white;
+}
+
+.sideBarContainer div:last-child button img {
+    height: 50px;
+    width: 50px;
 }
