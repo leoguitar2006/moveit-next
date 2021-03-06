@@ -9,9 +9,9 @@ export function LoginOverlay() {
     const { closeLogin, saveLoginUser } = useContext(ChallengesContext);
     const [user, setUser] = useState('');
 
-    function handleLoginButton() {        
-        closeLogin();
+    function handleLoginButton() { 
         saveLoginUser(user);        
+        closeLogin();               
         Router.push("/");
       }
     

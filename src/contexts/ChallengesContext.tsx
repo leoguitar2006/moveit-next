@@ -44,38 +44,36 @@ interface ChallengesProviderProps {
 };
 
 export function ChallengesProvider({children, ...rest}: ChallengesProviderProps) {
-    const [level, setLevel] = useState(rest.level);
-    const [currentExperience, setCurrentExperience] = useState(rest.currentExperience);
-    const [challengesCompleted, setChallengesCompleted] = useState(rest.challengesCompleted);
-    const [totalXP, setTotalXP] = useState(rest.totalXP);
+    
+    const [isLoginOpen, setIsLoginOpen] = useState(!!!rest.userName);      
+
+    const [level, setLevel] = useState(rest.level || 1);
+    const [currentExperience, setCurrentExperience] = useState(rest.currentExperience || 0);
+    const [challengesCompleted, setChallengesCompleted] = useState(rest.challengesCompleted || 0);
+    const [totalXP, setTotalXP] = useState(rest.totalXP || 0);
 
     const [activeChallenge, setActiveChallenge] = useState(null);
     const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
 
-    const [user, setUser] = useState(rest.user)
-    const [userName, setUserName] = useState(rest.userName)
+    const [user, setUser] = useState(rest.user || null)
+    const [userName, setUserName] = useState(rest.userName || null) 
 
-    const [isLoginOpen, setIsLoginOpen] = useState(!!!rest.userName);
-
-    const experienceToNextLevel = Math.pow((level + 1) * 4, 2);
+    const [experienceToNextLevel, setExperienceToNextLevel] = useState(Math.pow((level + 1) * 4, 2));
 
     useEffect(() => {
         Notification.requestPermission();
     }, []);
 
-    useEffect(() => {  
-        
-        Cookies.set("level", String(level));
-        Cookies.set("currentExperience", String(currentExperience));
-        Cookies.set("challengesCompleted", String(challengesCompleted)); 
-        Cookies.set("totalXP", String(totalXP));
+    useEffect(() => { 
+        if (currentExperience > 0) {
+            localStorage.setItem(user, JSON.stringify({ user: user, 
+                                                        userName: userName, 
+                                                        level: level, 
+                                                        currentExperience: currentExperience, 
+                                                        challengesCompleted: challengesCompleted, 
+                                                        totalXP: totalXP })); };                
+    },[ level, currentExperience, challengesCompleted, totalXP]);
 
-    },[ level, currentExperience, challengesCompleted, totalXP ]);
-
-    useEffect(() => {
-        user && Cookies.set('user', user)
-        userName && Cookies.set('userName', userName)
-      }, [user, userName])
 
     function levelUp() {
         setLevel(level + 1);
@@ -103,6 +101,26 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
             })
         }
         setUser(user);
+        setIsLoginOpen(false);
+
+        const userData = JSON.parse(localStorage.getItem(user));
+
+        if (userData != null) { 
+            setLevel(Number(userData.level));
+            setChallengesCompleted(Number(userData.challengesCompleted));
+            setExperienceToNextLevel(Math.pow((Number(userData.level) + 1) * 4, 2));
+            setCurrentExperience(Number(userData.currentExperience));
+            setTotalXP(Number(userData.totalXP));
+         } else {
+            setLevel(1);
+            setChallengesCompleted(0);
+            setExperienceToNextLevel(Math.pow((level + 1) * 4, 2));
+            setCurrentExperience(0);
+            setTotalXP(0);
+
+            localStorage.setItem(user, JSON.stringify({user, userName, level, currentExperience, challengesCompleted, totalXP}));                
+         };
+        
     }
 
     function startNewChallenge() {
