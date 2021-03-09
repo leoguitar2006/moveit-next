@@ -44,3 +44,17 @@ export default function Ranking(props: RankingProps) {
       </ChallengesProvider>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async(ctx) => {
+  const { level, currentExperience, challengesCompleted, user, userName, totalXP } = ctx.req.cookies
+  return {
+    props: {
+      level: Number(level ?? 1),
+      currentExperience: Number(currentExperience ?? 0),
+      challengesCompleted: Number(challengesCompleted ?? 0),
+      user: user || null,
+      userName: userName || null,
+      totalXP: Number(totalXP ?? 0)
+    }
+  }
+}

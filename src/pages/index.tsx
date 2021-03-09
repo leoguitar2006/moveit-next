@@ -15,6 +15,7 @@ import { ChallengesProvider } from "../contexts/ChallengesContext";
 import styles from "../styles/pages/Home.module.css";
 import { SideBar } from "../components/SideBar";
 
+
 interface HomeProps {
   level: number,
   currentExperience: number,
@@ -24,9 +25,8 @@ interface HomeProps {
   totalXP: number
 };
 
-export default function Home(props: HomeProps) {  
+export default function Home(props: HomeProps) { 
   return (
-
     <ChallengesProvider
       level={props.level}
       currentExperience={props.currentExperience}
@@ -47,7 +47,7 @@ export default function Home(props: HomeProps) {
           <CountdownProvider>
             <section>
               <div>               
-                <Profile />
+                <Profile/>
                 <CompletedChallenges />
                 <Countdown />
               </div>
@@ -62,4 +62,18 @@ export default function Home(props: HomeProps) {
     </ChallengesProvider>
     
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async(ctx) => {
+  const { level, currentExperience, challengesCompleted, user, userName, totalXP } = ctx.req.cookies
+  return {
+    props: {
+      level: Number(level ?? 1),
+      currentExperience: Number(currentExperience ?? 0),
+      challengesCompleted: Number(challengesCompleted ?? 0),
+      user: user || null,
+      userName: userName || null,
+      totalXP: Number(totalXP ?? 0)
+    }
+  }
 }

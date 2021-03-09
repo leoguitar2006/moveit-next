@@ -1,13 +1,9 @@
-import { useContext } from "react";
-import { Profile } from "../components/Profile";
-import { ChallengesContext } from "../contexts/ChallengesContext";
+import { displayTableData } from "../components/TableData";
 
 import styles from "../styles/components/TableRanking.module.css";
 
 export function TableRanking() {
-    const { challengesCompleted, totalXP } = useContext(ChallengesContext);    
-
-    return(        
+    return(  
         <div className={styles.tableRankingContainer}>
             <table id={styles.dataTable}>
                 <thead>
@@ -27,18 +23,7 @@ export function TableRanking() {
                     </tr>                                       
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>15</td>
-                        <td>
-                            <Profile/>
-                        </td>
-                        <td>
-                            <span>{challengesCompleted}</span>  Completados
-                        </td>
-                        <td>
-                            <span>{totalXP}</span> XP
-                        </td>
-                    </tr>
+                    {displayTableData()}
                 </tbody>
             </table>
 

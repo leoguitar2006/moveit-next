@@ -1,16 +1,20 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { LevelUpModal } from "../components/LevelUpModal";
-
+import Cookies from 'js-cookie';
 import axios from 'axios';
-import Cookies from "js-cookie";
+import _ from "underscore";
 import challenges from "../../challenges.json";
+
+import { LevelUpModal } from "../components/LevelUpModal";
 import { LoginOverlay } from "../components/LoginOverlay";
+
+
 
 interface Challenge {
     type: "body" | "eye",  //Como se fosse um enum
     description: String,
     amount: Number
 }
+
 
 interface ChallengesContextData {
     level: number,
@@ -28,7 +32,8 @@ interface ChallengesContextData {
     closeLogin: () => void,
     saveLoginUser: (user: string) => void,    
     openLogin: () => void,
-    totalXP: number
+    totalXP: number,
+    displayRanking: () => void
 };
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
@@ -56,7 +61,7 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
     const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
 
     const [user, setUser] = useState(rest.user || null)
-    const [userName, setUserName] = useState(rest.userName || null) 
+    const [userName, setUserName] = useState(rest.userName || rest.user) 
 
     const [experienceToNextLevel, setExperienceToNextLevel] = useState(Math.pow((level + 1) * 4, 2));
 
@@ -71,8 +76,29 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
                                                         level: level, 
                                                         currentExperience: currentExperience, 
                                                         challengesCompleted: challengesCompleted, 
-                                                        totalXP: totalXP })); };                
+                                                        totalXP: totalXP })); }; 
+                                                        
+            Cookies.set('user', String(user));
+            Cookies.set('userName', String(userName));
+            Cookies.set('level', String(level));
+            Cookies.set('currentExperience', String(currentExperience));
+            Cookies.set('challengesCompleted', String(challengesCompleted))               ;
+            Cookies.set('totalXP', String(totalXP));
+
     },[ level, currentExperience, challengesCompleted, totalXP]);
+
+    useEffect(() => {
+        if (user != "" && user != null && user != undefined) {
+            localStorage.setItem(user, JSON.stringify({user, userName, level, currentExperience, challengesCompleted, totalXP}));                
+
+            Cookies.set('user', String(user));
+            Cookies.set('userName', String(userName));
+            Cookies.set('level', String(level));
+            Cookies.set('currentExperience', String(currentExperience));
+            Cookies.set('challengesCompleted', String(challengesCompleted));
+            Cookies.set('totalXP', String(totalXP)); 
+        }
+    },[ userName ])
 
 
     function levelUp() {
@@ -93,14 +119,18 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
     }
 
     function saveLoginUser(user: string) {
+        
         if (user === null || user === "") {
-            user = ""
-        } else {
-            axios.get(`https://api.github.com/users/${user}`).then((response) => {
-                setUserName(response.data.name)
+            setUser("");
+        } else { 
+            setUser(user);
+
+            axios.get(`https://api.github.com/users/${user}`).then((response) => {                
+                setUserName(response.data.name || user);                
             })
         }
-        setUser(user);
+        
+        
         setIsLoginOpen(false);
 
         const userData = JSON.parse(localStorage.getItem(user));
@@ -120,7 +150,13 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
 
             localStorage.setItem(user, JSON.stringify({user, userName, level, currentExperience, challengesCompleted, totalXP}));                
          };
-        
+
+        Cookies.set('user', String(user));
+        Cookies.set('userName', String(userName));
+        Cookies.set('level', String(level));
+        Cookies.set('currentExperience', String(currentExperience));
+        Cookies.set('challengesCompleted', String(challengesCompleted));
+        Cookies.set('totalXP', String(totalXP));    
     }
 
     function startNewChallenge() {
@@ -163,6 +199,30 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
         setTotalXP(totalXP + amount)       ;
     };
 
+    function displayRanking() {
+        
+         let listRanking = [];
+         let numberUsers = localStorage.length;
+         let listRankingOrder = [];
+
+         for (let i = 0; i < numberUsers ; i++) {
+             let key = localStorage.key(i);
+             if (key != "ally-supports-cache") {
+                let value = localStorage.getItem(key);
+
+                listRanking.push(JSON.parse(value));
+
+                listRankingOrder = _.sortBy(listRanking, "totalXP");
+                
+             }
+             
+             
+         };
+         listRankingOrder = listRankingOrder.reverse();
+         console.log(listRankingOrder);
+        
+    };
+
     return (
     <ChallengesContext.Provider value={{
         level, 
@@ -180,7 +240,8 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
         closeLogin,
         saveLoginUser, 
         openLogin,
-        totalXP
+        totalXP,
+        displayRanking
     }}>
 
         {children}
