@@ -12,3 +12,5 @@ O projeto consiste em um contador de 25 minutos que a cada vez que é zerado, é
  - Instalado tipagens para o TS ( ```yarn add @types/react @types/react-dom @types/node```)
  - Todos os comandos instalados como dependências de desenvolvimento (```-D``` na instalação do Typescript e da tipagens) 
  - Instalado também para armazenamento das informações nos Cookies do _browser_, a biblioteca *js-cookie* e também a tipagem ```@types/js-cookie```
+ - Instalado biblioteca ```underscore``` para poder mostrar o ranking na ordem correta e também adicionada a tipagem da mesma com o ```@types/underscore```.
+ - Mudado armazenamento de Cookies para LocalStorage para suportar multi-usuários.
