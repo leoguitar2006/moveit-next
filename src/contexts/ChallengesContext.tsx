@@ -63,7 +63,7 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
     const [user, setUser] = useState(rest.user || null)
     const [userName, setUserName] = useState(rest.userName || rest.user) 
 
-    const [experienceToNextLevel, setExperienceToNextLevel] = useState(Math.pow((level + 1) * 4, 2));
+    let experienceToNextLevel = Math.pow((level + 1) * 4, 2);
 
     useEffect(() => {
         Notification.requestPermission();
@@ -138,13 +138,13 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
         if (userData != null) { 
             setLevel(Number(userData.level));
             setChallengesCompleted(Number(userData.challengesCompleted));
-            setExperienceToNextLevel(Math.pow((Number(userData.level) + 1) * 4, 2));
+            experienceToNextLevel = (Math.pow((Number(userData.level) + 1) * 4, 2));
             setCurrentExperience(Number(userData.currentExperience));
             setTotalXP(Number(userData.totalXP));
          } else {
+            console.log(level) ;
             setLevel(1);
             setChallengesCompleted(0);
-            setExperienceToNextLevel(Math.pow((level + 1) * 4, 2));
             setCurrentExperience(0);
             setTotalXP(0);
 
@@ -190,7 +190,7 @@ export function ChallengesProvider({children, ...rest}: ChallengesProviderProps)
 
         if (finalExperience >=experienceToNextLevel) {
             finalExperience = finalExperience - experienceToNextLevel;
-            levelUp();
+            levelUp();            
         }
 
         setCurrentExperience(finalExperience);

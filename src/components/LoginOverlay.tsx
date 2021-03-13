@@ -10,6 +10,10 @@ export function LoginOverlay() {
     const [user, setUser] = useState('');
 
     function handleLoginButton() { 
+        if (user == null || user == '') {
+            alert("Informe um usuário !");
+            return
+        }
         saveLoginUser(user);        
         closeLogin();               
         Router.push("/");
@@ -35,6 +39,7 @@ export function LoginOverlay() {
                     <input  type="text" 
                             placeholder="Digite seu usuário" 
                             className={styles.inputLogin}
+                            required
                             onChange={event => setLogin(event.target.value)}/>
                     <button type="button" 
                             className={styles.buttonLogin}
